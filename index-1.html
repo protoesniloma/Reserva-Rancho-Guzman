@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Villa Guzmán</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#eef3f1;--card:#fff;--ink:#14302b;--mut:#5d7771;--line:#d3e0dc;--pri:#0f5c52;--pri-ink:#fff;--acc:#e3a72f;--busy:#f3cfc4;--busy-ink:#8a3b25;--sel:#0f5c52;--ok:#1f7a4d;--warn:#b7791f}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1a18;--card:#142623;--ink:#e6f1ee;--mut:#8fb0a8;--line:#27413c;--pri:#3fb5a3;--pri-ink:#06201b;--busy:#4a2a22;--busy-ink:#f0b5a2;--sel:#3fb5a3}}
+:root[data-theme="dark"]{--bg:#0d1a18;--card:#142623;--ink:#e6f1ee;--mut:#8fb0a8;--line:#27413c;--pri:#3fb5a3;--pri-ink:#06201b;--busy:#4a2a22;--busy-ink:#f0b5a2;--sel:#3fb5a3}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*:before,*:after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Trebuchet MS","Segoe UI",Helvetica,Arial,sans-serif}
+header{background:linear-gradient(rgba(5,25,22,.40),rgba(5,25,22,.78)),url("portada.jpg") center/cover no-repeat var(--pri);color:#fff;padding:72px 20px 26px;min-height:220px;display:flex;flex-direction:column;justify-content:flex-end;text-shadow:0 1px 6px rgba(0,0,0,.55)}
+header h1{margin:0;font:700 34px/1.1 Georgia,"Times New Roman",serif;letter-spacing:.5px}
+header p{margin:6px 0 0;opacity:.9;max-width:46ch}
+.wrap{max-width:880px;margin:0 auto;padding:0 16px 40px}
+nav{display:flex;gap:8px;margin:16px 0}
+nav button{flex:1;padding:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;font:inherit;font-weight:600;cursor:pointer}
+nav button.on{background:var(--pri);color:var(--pri-ink);border-color:var(--pri)}
+.grid{display:grid;gap:16px;grid-template-columns:1fr}
+@media(min-width:760px){.grid{grid-template-columns:1.1fr 1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+h2{font:700 20px/1.2 Georgia,serif;margin:0 0 12px}
+.cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.cal-head b{text-transform:capitalize}
+.cal-head button{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:none;color:var(--ink);font-size:18px;cursor:pointer}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.dow{text-align:center;font-size:12px;color:var(--mut);padding:4px 0}
+.day{aspect-ratio:1;border:0;border-radius:8px;background:transparent;color:var(--ink);font:inherit;cursor:pointer;position:relative}
+.day:hover:not(:disabled){background:var(--line)}
+.day:disabled{color:var(--mut);opacity:.4;cursor:default}
+.day.busy{background:var(--busy);color:var(--busy-ink);text-decoration:line-through;opacity:1}
+.day.wk:not(.busy):not(.sel):not(.rng){box-shadow:inset 0 -3px 0 var(--acc)}
+.day.rng{background:color-mix(in srgb,var(--sel) 22%,transparent)}
+.day.sel{background:var(--sel);color:var(--pri-ink);font-weight:700}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--mut);margin-top:10px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+label{display:block;font-size:14px;font-weight:600;margin:10px 0 4px}
+input,select{width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit}
+input:focus-visible,button:focus-visible,select:focus-visible{outline:3px solid var(--acc);outline-offset:1px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sum{margin-top:14px;padding:12px;border-radius:10px;background:var(--bg);border:1px dashed var(--line);font-size:15px}
+.sum div{display:flex;justify-content:space-between;padding:2px 0}
+.sum .tot{font-weight:700;font-size:18px;border-top:1px solid var(--line);margin-top:6px;padding-top:8px}
+.btn{display:block;width:100%;margin-top:14px;padding:14px;border:0;border-radius:10px;background:var(--pri);color:var(--pri-ink);font:inherit;font-weight:700;cursor:pointer}
+.btn.sm{display:inline-block;width:auto;margin:0;padding:8px 12px;font-size:14px}
+.btn.ghost{background:none;color:var(--ink);border:1px solid var(--line)}
+.msg{margin-top:10px;font-size:14px;min-height:20px;color:var(--busy-ink)}
+.msg.ok{color:var(--ok)}
+.res{display:flex;flex-direction:column;gap:6px;padding:14px 0;border-bottom:1px solid var(--line)}
+.res:last-child{border:0}
+.res .top{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.res .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.tag{font-size:12px;padding:2px 8px;border-radius:99px;border:1px solid currentColor;font-weight:700}
+.tag.Pendiente{color:var(--warn)}.tag.Confirmada{color:var(--ok)}.tag.Cancelada{color:var(--mut)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.stats div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}
+.stats b{display:block;font:700 20px Georgia,serif}.stats span{font-size:12px;color:var(--mut)}
+.empty{color:var(--mut);padding:10px 0}
+.hide{display:none}
+</style>
+</head>
+<body>
+<header>
+<h1>Villa Guzmán</h1>
+<p>Pasadía RD$ 8,000 · Amanecida RD$ 12,000. Elige la fecha en el calendario y recibe la confirmación por WhatsApp.</p>
+</header>
+<div class="wrap">
+<nav>
+<button id="t1" class="on" onclick="tab(1)">Reservar</button>
+<button id="t2" onclick="tab(2)">Reservas</button>
+</nav>
+
+<section id="p1" class="grid">
+<div class="card">
+<h2>Fechas disponibles</h2>
+<div class="cal-head"><button onclick="mv(-1)" aria-label="Mes anterior">‹</button><b id="mes"></b><button onclick="mv(1)" aria-label="Mes siguiente">›</button></div>
+<div class="cal" id="cal"></div>
+<div class="legend"><span><i style="background:var(--sel)"></i>Tu selección</span><span><i style="background:var(--busy)"></i>Ocupado</span></div>
+</div>
+<div class="card">
+<h2>Tu reserva</h2>
+<label for="tipo">Tipo de reserva</label><select id="tipo" onchange="cambia()"><option>Amanecida</option><option>Pasadía</option></select><div class="row"><div><label for="fin" id="lin">Entrada</label><input type="date" id="fin"></div><div id="bout"><label for="fout">Salida</label><input type="date" id="fout"></div></div>
+<label for="nom">Nombre completo</label><input id="nom" autocomplete="name">
+<div class="row"><div><label for="tel">WhatsApp</label><input id="tel" type="tel" inputmode="tel" autocomplete="tel" placeholder="809 555 0000"></div>
+<div><label for="gst">Huéspedes</label><select id="gst"></select></div></div>
+<div class="sum" id="sum"><div>Elige entrada y salida para ver el precio.</div></div>
+<button class="btn" onclick="book()">Solicitar reserva</button>
+<div class="msg" id="msg" role="status"></div>
+</div>
+</section>
+
+<section id="p2" class="hide">
+<div class="msg" id="est">Guardado solo en este aparato.</div><div class="stats" id="stats"></div>
+<div class="card"><h2>Reservas</h2><div id="list"></div></div>
+</section>
+</div>
+
+<script>
+// ===== Configuración: ajusta estos valores =====
+var CFG={pasadia:8000,amanecida:12000,maxHuespedes:12,abono:0.5,whatsappVilla:"18097600364",SB_URL:"PEGA_AQUI_TU_URL",SB_KEY:"PEGA_AQUI_TU_CLAVE"};
+var KEY="villa_guzman_reservas";
+var res=[],ini="",fin="",cur=new Date();cur.setDate(1);
+var RD=function(n){return "RD$ "+Math.round(n).toLocaleString("es-DO")};
+var $=function(i){return document.getElementById(i)};
+function load(){try{res=JSON.parse(localStorage.getItem(KEY)||"[]")}catch(e){res=[]}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(res))}catch(e){}}
+var REMOTE=CFG.SB_URL.indexOf("http")==0,BUSY={},TOKEN=null;
+function api(p,o){o=o||{};var hd={apikey:CFG.SB_KEY,Authorization:"Bearer "+(TOKEN||CFG.SB_KEY),"Content-Type":"application/json"};if(o.pf)hd.Prefer=o.pf;
+ return fetch(CFG.SB_URL+"/rest/v1/"+p,{method:o.m||"GET",headers:hd,body:o.b?JSON.stringify(o.b):undefined}).then(function(r){
+  if(r.status==401&&TOKEN){TOKEN=null;lista()}
+  if(!r.ok)throw new Error(r.status);return r.text().then(function(t){return t?JSON.parse(t):null})})}
+function fromRow(x){return{id:x.id,nom:x.nom,tel:x.tel,tipo:x.tipo,in:x.entrada,out:x.salida,g:x.huespedes,total:x.total,estado:x.estado}}
+function cargaOcupadas(){api("ocupadas?select=dia").then(function(rows){BUSY={};rows.forEach(function(r){BUSY[r.dia]=1});cal()}).catch(function(){})}
+function cargaLista(){api("reservas?select=*&order=entrada.asc").then(function(rows){res=rows.map(fromRow);lista()}).catch(function(){})}
+function refresca(){cargaOcupadas();if(TOKEN)cargaLista()}
+function persist(r,nuevo){
+ if(!REMOTE){save();return}
+ if(nuevo)api("reservas",{m:"POST",pf:"return=minimal",b:{nom:r.nom,tel:r.tel,tipo:r.tipo,entrada:r.in,salida:r.out,huespedes:r.g,total:r.total,estado:"Pendiente"}}).then(refresca).catch(function(){setMsg("No se pudo enviar la reserva. Intenta de nuevo.")});
+ else api("reservas?id=eq."+r.id,{m:"PATCH",pf:"return=minimal",b:{estado:r.estado}}).then(refresca).catch(function(){})}
+function quita(id){if(!REMOTE){save();return}api("reservas?id=eq."+id,{m:"DELETE",pf:"return=minimal"}).then(refresca).catch(function(){})}
+var loginHTML='<label for="em">Correo</label><input id="em" type="email" autocomplete="username"><label for="pw">Contraseña</label><input id="pw" type="password" autocomplete="current-password"><button class="btn" onclick="entrar()">Entrar</button><div class="msg" id="lm"></div>';
+function entrar(){
+ fetch(CFG.SB_URL+"/auth/v1/token?grant_type=password",{method:"POST",headers:{apikey:CFG.SB_KEY,"Content-Type":"application/json"},body:JSON.stringify({email:$("em").value.trim(),password:$("pw").value})})
+ .then(function(r){return r.json()}).then(function(d){
+  if(!d.access_token){$("lm").textContent="Correo o contraseña incorrectos.";return}
+  TOKEN=d.access_token;$("est").className="msg ok";$("est").textContent="Administrador conectado.";cargaLista()
+ }).catch(function(){$("lm").textContent="No hay conexión. Intenta de nuevo."})
+}
+function iso(d){var m=d.getMonth()+1,x=d.getDate();return d.getFullYear()+"-"+(m<10?"0":"")+m+"-"+(x<10?"0":"")+x}
+function dt(s){return new Date(s+"T00:00:00")}
+function tipo(){return $("tipo").value}
+function noches(a,b){var o=[],d=dt(a),e=dt(b);while(d<e){o.push(iso(d));d.setDate(d.getDate()+1)}return o}
+function slots(t,a,b){return t=="Pasadía"?[a]:noches(a,b)}
+function precio(t,ns){return ns.length*(t=="Pasadía"?CFG.pasadia:CFG.amanecida)}
+function activas(){return res.filter(function(r){return r.estado!="Cancelada"})}
+function ocupadas(){if(REMOTE)return BUSY;var s={};activas().forEach(function(r){slots(r.tipo,r.in,r.out).forEach(function(n){s[n]=1})});return s}
+function fmt(s){return dt(s).toLocaleDateString("es-DO",{day:"numeric",month:"short",year:"numeric"})}
+function cuando(r){return r.tipo=="Pasadía"?fmt(r.in):fmt(r.in)+" – "+fmt(r.out)}
+function tab(n){$("p1").className=n==1?"grid":"hide";$("p2").className=n==2?"":"hide";$("t1").className=n==1?"on":"";$("t2").className=n==2?"on":"";if(n==2)lista()}
+function mv(k){cur.setMonth(cur.getMonth()+k);cal()}
+function cambia(){var p=tipo()=="Pasadía";$("bout").className=p?"hide":"";$("lin").textContent=p?"Fecha":"Entrada";ini=fin="";$("fin").value=$("fout").value="";cal();resumen()}
+
+function cal(){
+ var busy=ocupadas(),hoy=iso(new Date()),y=cur.getFullYear(),m=cur.getMonth(),h="";
+ $("mes").textContent=cur.toLocaleDateString("es-DO",{month:"long",year:"numeric"});
+ "LMMJVSD".split("").forEach(function(c){h+='<div class="dow">'+c+'</div>'});
+ var off=(new Date(y,m,1).getDay()+6)%7;for(var i=0;i<off;i++)h+="<div></div>";
+ var n=new Date(y,m+1,0).getDate();
+ for(var d=1;d<=n;d++){
+  var s=iso(new Date(y,m,d)),c="day";
+  if(busy[s])c+=" busy";
+  if(s==ini||s==fin)c+=" sel";else if(ini&&fin&&s>ini&&s<fin)c+=" rng";
+  h+='<button class="'+c+'" '+(s<hoy||busy[s]&&s!=fin?"disabled":"")+' onclick="pick(\''+s+'\')">'+d+'</button>';
+ }
+ $("cal").innerHTML=h;
+}
+function pick(s){
+ if(tipo()=="Pasadía"){ini=fin=s}
+ else if(!ini||fin){ini=s;fin=""}else if(s>ini){fin=s}else{ini=s}
+ $("fin").value=ini;$("fout").value=tipo()=="Pasadía"?"":fin;sync()
+}
+function sync(){ini=$("fin").value;fin=tipo()=="Pasadía"?ini:$("fout").value;cal();resumen()}
+function valido(){return ini&&fin&&(tipo()=="Pasadía"||fin>ini)}
+function resumen(){
+ var el=$("sum");
+ if(!valido()){el.innerHTML="<div>Elige la fecha en el calendario para ver el precio.</div>";return}
+ var t=tipo(),ns=slots(t,ini,fin),tot=precio(t,ns);
+ var l=t=="Pasadía"?"Pasadía · 1 día":"Amanecida · "+ns.length+" noche"+(ns.length>1?"s":"");
+ el.innerHTML="<div><span>"+l+"</span><span>"+RD(tot)+"</span></div><div class='tot'><span>Total</span><span>"+RD(tot)+"</span></div><div><span>Abono para asegurar ("+Math.round(CFG.abono*100)+"%)</span><span>"+RD(tot*CFG.abono)+"</span></div>";
+}
+function tel(t){var d=(t||"").replace(/\D/g,"");return d.length==10?"1"+d:d}
+function setMsg(t,ok){var e=$("msg");e.textContent=t;e.className="msg"+(ok?" ok":"")}
+function book(){
+ var nom=$("nom").value.trim(),t=tel($("tel").value),g=+$("gst").value,tp=tipo();
+ if(!valido())return setMsg(tp=="Pasadía"?"Elige la fecha de tu pasadía.":"Elige la fecha de entrada y de salida.");
+ if(nom.length<3)return setMsg("Escribe tu nombre completo.");
+ if(t.length<10)return setMsg("Escribe un número de WhatsApp válido.");
+ var ns=slots(tp,ini,fin),b=ocupadas();
+ for(var i=0;i<ns.length;i++)if(b[ns[i]])return setMsg("Esas fechas ya están ocupadas. Elige otras.");
+ var tot=precio(tp,ns),r={id:Date.now(),nom:nom,tel:t,tipo:tp,in:ini,out:fin,g:g,total:tot,estado:"Pendiente"};
+ res.push(r);persist(r,1);
+ var txt="Hola, soy "+nom+". Quiero reservar Villa Guzmán ("+tp+"): "+cuando(r)+", "+g+" huéspedes. Total: "+RD(tot)+".";
+ setMsg("Reserva solicitada. Te contactaremos para confirmar.",1);
+ if(CFG.whatsappVilla)window.open("https://wa.me/"+CFG.whatsappVilla+"?text="+encodeURIComponent(txt),"_blank");
+ ini=fin="";$("fin").value=$("fout").value=$("nom").value=$("tel").value="";cal();resumen();
+}
+function wa(id){
+ var r=res.filter(function(x){return x.id==id})[0];if(!r)return;
+ var txt="Hola "+r.nom+", tu reserva en Villa Guzmán está confirmada: "+r.tipo+", "+cuando(r)+", "+r.g+" huéspedes. Total: "+RD(r.total)+". Para asegurar la fecha, el abono es de "+RD(r.total*CFG.abono)+". ¡Te esperamos!";
+ r.estado="Confirmada";persist(r);lista();cal();
+ window.open("https://wa.me/"+r.tel+"?text="+encodeURIComponent(txt),"_blank");
+}
+function cancelar(id){if(!confirm("¿Cancelar esta reserva? Las fechas quedarán libres."))return;res.forEach(function(r){if(r.id==id){r.estado="Cancelada";persist(r)}});lista();cal()}
+function borrar(id){if(!confirm("¿Eliminar esta reserva para siempre?"))return;res=res.filter(function(r){return r.id!=id});quita(id);lista();cal()}
+function lista(){
+ if(REMOTE&&!TOKEN){$("stats").innerHTML="";$("est").textContent="";$("list").innerHTML=loginHTML;return}
+ var a=activas(),conf=a.filter(function(r){return r.estado=="Confirmada"}),pen=a.filter(function(r){return r.estado=="Pendiente"});
+ var ing=conf.reduce(function(t,r){return t+r.total},0);
+ $("stats").innerHTML="<div><b>"+pen.length+"</b><span>Pendientes</span></div><div><b>"+conf.length+"</b><span>Confirmadas</span></div><div><b>"+RD(ing)+"</b><span>Confirmado</span></div>";
+ if(!res.length){$("list").innerHTML='<div class="empty">Aún no hay reservas. Cuando alguien reserve, aparecerá aquí.</div>';return}
+ var s=res.slice().sort(function(a,b){return a.in<b.in?-1:1});
+ $("list").innerHTML=s.map(function(r){
+  var x='<div class="res"><div class="top"><b>'+esc(r.nom)+'</b><span class="tag '+r.estado+'">'+r.estado+'</span></div><div>'+(r.tipo||"Amanecida")+' · '+cuando(r)+' · '+r.g+' huéspedes</div><div>'+RD(r.total)+' · '+esc(r.tel)+'</div><div class="acts">';
+  if(r.estado!="Cancelada")x+='<button class="btn sm" onclick="wa('+r.id+')">'+(r.estado=="Pendiente"?"Confirmar por WhatsApp":"Reenviar WhatsApp")+'</button><button class="btn sm ghost" onclick="cancelar('+r.id+')">Cancelar</button>';
+  return x+'<button class="btn sm ghost" onclick="borrar('+r.id+')">Eliminar</button></div></div>';
+ }).join("");
+}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+
+load();
+var g=$("gst");for(var i=1;i<=CFG.maxHuespedes;i++)g.innerHTML+="<option value="+i+">"+i+(i>1?" huéspedes":" huésped")+"</option>";
+$("fin").min=$("fout").min=iso(new Date());
+$("fin").onchange=$("fout").onchange=sync;
+cal();$("t2").textContent="Administrar";
+if(REMOTE){$("est").textContent="";cargaOcupadas()}
+</script>
+</body>
+</html>
